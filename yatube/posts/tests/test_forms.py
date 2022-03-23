@@ -59,7 +59,8 @@ class CommentCreateFormTests(PostTestSetUpMixin):
         self.authorized_client.force_login(self.user)
 
     def test_comment_comment_authorized_client(self):
-        """Валидная форма создает комментарий только для авторизованного пользователя."""
+        """Валидная форма создает комментарий только
+        для авторизованного пользователя."""
         comments_count = Comment.objects.filter(post=PostLocators.PK).count()
         form_data = {
             'text': PostLocators.COMMENT_POST_TEXT_FORM,
@@ -87,5 +88,3 @@ class CommentCreateFormTests(PostTestSetUpMixin):
             Comment.objects.filter(post=PostLocators.PK).count(),
             comments_count + 1
         )
-
-

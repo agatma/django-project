@@ -51,7 +51,9 @@ def profile(request, username):
     """This view render profile page by its username."""
     author = get_object_or_404(User, username=username)
     if request.user.is_authenticated:
-        following = Follow.objects.filter(user=request.user, author=author).exists()
+        following = Follow.objects.filter(
+            user=request.user, author=author
+        ).exists()
     else:
         following = False
     post_list = author.posts.all()
@@ -144,4 +146,3 @@ def profile_unfollow(request, username):
     author = get_object_or_404(User, username=username)
     Follow.objects.filter(user=user, author=author).delete()
     return redirect('posts:follow_index')
-
