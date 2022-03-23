@@ -242,3 +242,4 @@ class FollowViewsTests(TestCase):
             len(response_user1_one),
             len(response_user2_zero),
         )
+        
