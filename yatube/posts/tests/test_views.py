@@ -2,7 +2,6 @@ from http import HTTPStatus
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.conf import settings
 from django.test import Client, TestCase
 from posts.models import Post, Group, Follow
 from posts.tests.set_up_tests import (
