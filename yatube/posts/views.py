@@ -119,13 +119,26 @@ def add_comment(request, post_id):
     return redirect('posts:post_detail', post_id=post_id)
 
 
+# @login_required
+# def follow_index(request):
+#     """Напишите view-функцию страницы, куда будут выведены посты авторов,
+#     на которых подписан текущий пользователь.
+#     """
+#     authors_id = request.user.follower.all().values_list('author', flat=True)
+#     posts = Post.objects.filter(author_id__in=authors_id)
+#     paginator = Paginator(posts, settings.PAGE_PER_PAGE)
+#     page_obj = paginator.get_page(request.GET.get('page'))
+#     context = {'page_obj': page_obj}
+#     return render(request, 'posts/follow.html', context)
+
 @login_required
 def follow_index(request):
     """Напишите view-функцию страницы, куда будут выведены посты авторов,
     на которых подписан текущий пользователь.
     """
-    authors_id = request.user.follower.all().values_list('author', flat=True)
-    posts = Post.objects.filter(author_id__in=authors_id)
+    posts = Post.objects.select_related('author').filter(
+        author__following__user=request.user
+    ).all()
     paginator = Paginator(posts, settings.PAGE_PER_PAGE)
     page_obj = paginator.get_page(request.GET.get('page'))
     context = {'page_obj': page_obj}
@@ -136,10 +149,8 @@ def follow_index(request):
 def profile_follow(request, username):
     user = get_object_or_404(User, username=request.user)
     author = get_object_or_404(User, username=username)
-    following = Follow.objects.filter(
-        user=user, author=author).count()
-    if user != author and following < 1:
-        Follow.objects.create(user=user, author=author)
+    if user != author:
+        Follow.objects.get_or_create(user=user, author=author, )
     return redirect('posts:follow_index')
 
 
@@ -147,5 +158,7 @@ def profile_follow(request, username):
 def profile_unfollow(request, username):
     user = get_object_or_404(User, username=request.user)
     author = get_object_or_404(User, username=username)
-    Follow.objects.filter(user=user, author=author).delete()
+    follow_action = Follow.objects.filter(user=user, author=author)
+    if follow_action.exists():
+        follow_action.delete()
     return redirect('posts:follow_index')

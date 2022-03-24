@@ -16,6 +16,10 @@ class Group(models.Model):
         verbose_name='Описание группы',
     )
 
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
     def __str__(self):
         return self.title
 
@@ -56,6 +60,8 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('-pub_date',)
+        verbose_name = 'Посты'
+        verbose_name_plural = 'Посты'
 
     def __str__(self):
         return self.text[:settings.POST_SYMBOLS]
@@ -80,7 +86,8 @@ class Comment(models.Model):
         help_text='Автор комментария',
         verbose_name='Автор комментария',
     )
-    text = models.TextField(help_text='Введите текст комментария',
+    text = models.TextField(max_length=200,
+                            help_text='Введите текст комментария',
                             verbose_name='Содержание комментария')
     created = models.DateTimeField(
         auto_now_add=True,
@@ -88,6 +95,10 @@ class Comment(models.Model):
         help_text='Дата публикации комментария (автоматически определяется)',
         verbose_name='Дата публикации комментария',
     )
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self):
         return self.text
@@ -113,6 +124,8 @@ class Follow(models.Model):
 
     class Meta:
         ordering = ('-author',)
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
 
     def __str__(self):
         return (f'user - {self.user} '

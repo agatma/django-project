@@ -173,13 +173,26 @@ class FollowViewsTests(TestCase):
         self.authorized_client_check.force_login(self.user_for_check)
         self.response_302 = HTTPStatus.FOUND
 
-    def test_follow_views_authorized_user_follow_and_unfollow(self):
+    def test_follow_views_authorized_user_follow(self):
         """Авторизованный пользователь может подписываться на
-        других пользователей и удалять их из подписок."""
+        других пользователей."""
         response_follow = self.authorized_client.get(
             PostPagesLocators.FOLLOW_USER_AUTHOR
         )
         self.assertRedirects(response_follow, PostPagesLocators.FOLLOW_INDEX)
+        self.assertTrue(
+            Follow.objects.filter(
+                user=self.user,
+                author=self.user_author,
+            ).exists()
+        )
+
+    def test_follow_views_authorized_user_unfollow(self):
+        """Авторизованный пользователь может отписаться от
+        других пользователей."""
+        self.authorized_client.get(
+            PostPagesLocators.FOLLOW_USER_AUTHOR
+        )
         self.assertTrue(
             Follow.objects.filter(
                 user=self.user,
