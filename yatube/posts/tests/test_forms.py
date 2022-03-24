@@ -1,6 +1,6 @@
 from django.test import Client
-from ..models import Post, Comment
-from .set_up_tests import (
+from posts.models import Post, Comment
+from posts.tests.set_up_tests import (
     PostTestSetUpMixin, PostPagesLocators, GroupLocators, PostLocators
 )
 

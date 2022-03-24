@@ -3,8 +3,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.test import Client, TestCase
-from ..models import Post, Group, Follow
-from .set_up_tests import (
+from posts.models import Post, Group, Follow
+from posts.tests.set_up_tests import (
     PostTestSetUpMixin, PostPagesLocators, PostLocators,
     UserLocators, GroupLocators
 )

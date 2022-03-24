@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
-from ..models import Post, Group, Comment
+from posts.models import Post, Group, Comment
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -68,6 +68,12 @@ class PostPagesLocators:
     )
     PAGE_404 = '/test_404_page/'
     CREATE_EDIT_PAGES = ('/create/', '/posts/4242/edit/')
+    REDIRECT_PAGES = ('/create/',
+                      '/posts/4242/edit/',
+                      '/follow/',
+                      '/profile/auth/follow/',
+                      '/profile/auth/unfollow/',
+                      )
     POST_INDEX = reverse('posts:index')
     POST_CREATE = reverse('posts:post_create')
     POST_PROFILE = reverse('posts:profile', kwargs={'username': 'auth'})
@@ -88,6 +94,13 @@ class PostPagesLocators:
         ('posts/post_detail.html', '/posts/4242/'),
         ('posts/create_post.html', '/create/'),
         ('posts/create_post.html', '/posts/4242/edit/'),
+        ('posts/follow.html', '/follow/'),
+    )
+    templates_url_name_guest = (
+        ('posts/index.html', '/'),
+        ('posts/group_list.html', '/group/new_test_group/'),
+        ('posts/profile.html', '/profile/auth/'),
+        ('posts/post_detail.html', '/posts/4242/'),
     )
     templates = (
         ('posts/index.html', reverse('posts:index')),
