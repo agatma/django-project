@@ -3,15 +3,14 @@ from django.conf import settings
 from django.test import Client, TestCase
 from posts.models import Follow
 from posts.tests.set_up_tests import UserLocators
-from posts.tests.set_up_tests import PostLocators, PostTestSetUpMixin
+from posts.tests.set_up_tests import (
+    PostLocators, PostTestSetUpMixin, PostPagesLocators
+)
 
 User = get_user_model()
 
 
 class PostModelTest(PostTestSetUpMixin):
-    def setUp(self):
-        self.post = PostModelTest.post
-
     def test_post_models_have_correct_object_names(self):
         """Проверяем, что у модели Post корректно работает __str__."""
         self.assertEqual(
@@ -40,15 +39,31 @@ class PostModelTest(PostTestSetUpMixin):
 class GroupModelTest(PostTestSetUpMixin):
     def test_group_models_have_correct_object_names(self):
         """Проверяем, что у модели Group корректно работает __str__."""
-        group = GroupModelTest.group
+        group = self.group
         self.assertEqual(str(group), group.title, )
 
 
 class CommentModelTest(PostTestSetUpMixin):
+    def setUp(self):
+        self.guest_client = Client()
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
+
     def test_comment_models_have_correct_object_names(self):
         """Проверяем, что у модели Comment корректно работает __str__."""
-        comment = GroupModelTest.comment
-        self.assertEqual(str(comment), comment.text[:settings.POST_SYMBOLS], )
+        """Проверяем отображение комментария для любого пользователя
+               Комментарий создан в set_up_tests"""
+        form_data = {
+            'text': PostLocators.COMMENT_POST_TEXT_FORM,
+        }
+        self.authorized_client.post(
+            PostPagesLocators.ADD_COMMENT,
+            data=form_data,
+            follow=True
+        )
+        response = self.guest_client.get(PostPagesLocators.POST_DETAIL)
+        text = response.context['comments'][0]
+        self.assertEqual(str(text), PostLocators.COMMENT_POST_TEXT_FORM, )
 
 
 class FollowModelTest(TestCase):
@@ -66,13 +81,7 @@ class FollowModelTest(TestCase):
             author=cls.user_author,
         )
 
-    def setUp(self):
-        self.guest_client = Client()
-        self.authorized_client = Client()
-        self.authorized_client.force_login(self.user)
-
     def test_comment_models_have_correct_object_names(self):
         """Проверяем, что у модели Follow корректно работает __str__."""
-        follow = self.follow
         result = f'user - {self.user} author - {self.user_author}'
-        self.assertEqual(str(follow), result, )
+        self.assertEqual(str(self.follow), result, )
