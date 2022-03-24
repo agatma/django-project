@@ -50,12 +50,11 @@ def post_detail(request, post_id):
 def profile(request, username):
     """This view render profile page by its username."""
     author = get_object_or_404(User, username=username)
+    following = False
     if request.user.is_authenticated:
         following = Follow.objects.filter(
             user=request.user, author=author
         ).exists()
-    else:
-        following = False
     post_list = author.posts.all()
     count_of_posts = post_list.count()
     paginator = Paginator(post_list, settings.PAGE_PER_PAGE)
@@ -118,18 +117,6 @@ def add_comment(request, post_id):
         comment.save()
     return redirect('posts:post_detail', post_id=post_id)
 
-
-# @login_required
-# def follow_index(request):
-#     """Напишите view-функцию страницы, куда будут выведены посты авторов,
-#     на которых подписан текущий пользователь.
-#     """
-#     authors_id = request.user.follower.all().values_list('author', flat=True)
-#     posts = Post.objects.filter(author_id__in=authors_id)
-#     paginator = Paginator(posts, settings.PAGE_PER_PAGE)
-#     page_obj = paginator.get_page(request.GET.get('page'))
-#     context = {'page_obj': page_obj}
-#     return render(request, 'posts/follow.html', context)
 
 @login_required
 def follow_index(request):

@@ -32,7 +32,7 @@ class PostLocators:
     TEXT_VERBOSE = 'Содержание поста'
     TEXT_HELP_TEXT = 'Введите текст поста'
     COMMENT_POST_TEXT = 'Комментарий для поста'
-    COMMENT_POST_TEXT_FORM = 'Комментарий для формы'
+    COMMENT_POST_TEXT_FORM = 'Комментарий для формы'[:settings.POST_SYMBOLS]
     PUB_DATE_VERBOSE = 'Дата публикации поста'
     PUB_DATE_HELP_TEXT = 'Дата публикации поста (автоматически определяется)'
     AUTHOR_VERBOSE_AND_HELP = 'Автор поста'
@@ -150,11 +150,6 @@ class PostTestSetUpMixin(TestCase):
             pk=PostLocators.PK,
             group=cls.group,
             image=PostLocators.IMAGE_UPLOADED_VIEWS,
-        )
-        cls.comment = Comment.objects.create(
-            post=cls.post,
-            author=cls.user,
-            text=PostLocators.COMMENT_POST_TEXT,
         )
 
     @classmethod

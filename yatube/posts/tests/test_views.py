@@ -2,6 +2,7 @@ from http import HTTPStatus
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.conf import settings
 from django.test import Client, TestCase
 from posts.models import Post, Group, Follow
 from posts.tests.set_up_tests import (
@@ -140,9 +141,21 @@ class CommentTests(PostTestSetUpMixin):
     def test_comment_views_availability(self):
         """Проверяем отображение комментария для любого пользователя
         Комментарий создан в set_up_tests"""
+        form_data = {
+            'text': PostLocators.COMMENT_POST_TEXT_FORM,
+        }
+        self.authorized_client.post(
+            PostPagesLocators.ADD_COMMENT,
+            data=form_data,
+            follow=True
+        )
         response = self.guest_client.get(PostPagesLocators.POST_DETAIL)
-        text_initial = response.context['comments'][0]
-        self.assertEqual(str(text_initial), PostLocators.COMMENT_POST_TEXT)
+        text = response.context['comments'][0].text
+        author_username = response.context['comments'][0].author.username
+        post_id = response.context['comments'][0].post.pk
+        self.assertEqual(text, PostLocators.COMMENT_POST_TEXT_FORM, )
+        self.assertEqual(author_username, UserLocators.USERNAME, )
+        self.assertEqual(str(post_id), PostLocators.PK, )
 
 
 class FollowViewsTests(TestCase):

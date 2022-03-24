@@ -48,7 +48,7 @@ class CommentModelTest(PostTestSetUpMixin):
     def test_comment_models_have_correct_object_names(self):
         """Проверяем, что у модели Comment корректно работает __str__."""
         comment = GroupModelTest.comment
-        self.assertEqual(str(comment), comment.text, )
+        self.assertEqual(str(comment), comment.text[:settings.POST_SYMBOLS], )
 
 
 class FollowModelTest(TestCase):

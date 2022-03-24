@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.db.models import UniqueConstraint
 
 User = get_user_model()
 
@@ -101,7 +102,7 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return self.text
+        return self.text[:settings.POST_SYMBOLS]
 
 
 class Follow(models.Model):
@@ -126,6 +127,7 @@ class Follow(models.Model):
         ordering = ('-author',)
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        UniqueConstraint(fields=['user', 'author'], name='unique_follow')
 
     def __str__(self):
         return (f'user - {self.user} '
