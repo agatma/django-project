@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.conf import settings
-from django.db.models import UniqueConstraint
 
 User = get_user_model()
 
@@ -128,7 +127,9 @@ class Follow(models.Model):
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [
-            models.UniqueConstraint(fields=('user', 'author'), name='unique_follow')
+            models.UniqueConstraint(
+                fields=('user', 'author'),
+                name='unique_follow')
         ]
 
     def __str__(self):
