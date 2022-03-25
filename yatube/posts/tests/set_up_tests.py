@@ -139,6 +139,7 @@ class PostTestSetUpMixin(TestCase):
         """Создаем тестового пользователя, группу и пост."""
         super().setUpClass()
         cls.user = User.objects.create_user(username=UserLocators.USERNAME)
+
         cls.group = Group.objects.create(
             title=GroupLocators.TITLE,
             slug=GroupLocators.SLUG,

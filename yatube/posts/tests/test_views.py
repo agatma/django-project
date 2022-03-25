@@ -202,8 +202,9 @@ class FollowViewsTests(TestCase):
     def test_follow_views_authorized_user_unfollow(self):
         """Авторизованный пользователь может отписаться от
         других пользователей."""
-        self.authorized_client.get(
-            PostPagesLocators.FOLLOW_USER_AUTHOR
+        Follow.objects.create(
+            user=self.user,
+            author=self.user_author
         )
         self.assertTrue(
             Follow.objects.filter(
@@ -249,6 +250,7 @@ class FollowViewsTests(TestCase):
         self.authorized_client.get(
             PostPagesLocators.FOLLOW_USER_AUTHOR
         )
+
         Post.objects.create(
             author=self.user_author,
             text=PostLocators.TEXT,

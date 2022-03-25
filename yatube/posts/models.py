@@ -127,7 +127,9 @@ class Follow(models.Model):
         ordering = ('-author',)
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        UniqueConstraint(fields=['user', 'author'], name='unique_follow')
+        constraints = [
+            models.UniqueConstraint(fields=('user', 'author'), name='unique_follow')
+        ]
 
     def __str__(self):
         return (f'user - {self.user} '
